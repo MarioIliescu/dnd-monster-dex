@@ -8,7 +8,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api/': {
-        target: 'https://www.dnd5eapi.co/',
+        target: 'https://www.dnd5eapi.co',
         changeOrigin: true,
       },
     }

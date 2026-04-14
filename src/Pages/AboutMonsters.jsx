@@ -1,208 +1,89 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
-function SearchForm({ searchName, setSearchName, onSearch }) {
-    return (
-        <form onSubmit={onSearch} style={{ marginBottom: "20px" }}>
-            <input
-                type="text"
-                value={searchName}
-                onChange={(e) => setSearchName(e.target.value)}
-                placeholder="Type monster name, like owlbear"
-                style={{ padding: "8px", marginRight: "8px", width: "250px" }}
-            />
-            <button type="submit">Search</button>
-        </form>
-    )
-}
-
-function BasicInfo({ monster }) {
-    return (
-        <>
-            <h2>Basic Info</h2>
-            <p><strong>Size:</strong> {monster.size}</p>
-            <p><strong>Type:</strong> {monster.type}</p>
-            <p><strong>Alignment:</strong> {monster.alignment}</p>
-            <p><strong>Hit Points:</strong> {monster.hit_points}</p>
-            <p><strong>Hit Dice:</strong> {monster.hit_dice}</p>
-            <p>
-                <strong>Armor Class:</strong> {monster.armor_class?.[0]?.value} ({monster.armor_class?.[0]?.type})
-            </p>
-            <p><strong>Challenge Rating:</strong> {monster.challenge_rating}</p>
-            <p><strong>XP:</strong> {monster.xp}</p>
-            <p><strong>Languages:</strong> {monster.languages}</p>
-        </>
-    )
-}
-
-function SpeedInfo({ speed }) {
-    return (
-        <>
-            <h2>Speed</h2>
-            <ul>
-                {Object.entries(speed || {}).map(([type, value]) => (
-                    <li key={type}>
-                        <strong>{type}:</strong> {value}
-                    </li>
-                ))}
-            </ul>
-        </>
-    )
-}
-
-function StatsInfo({ monster }) {
-    return (
-        <>
-            <h2>Stats</h2>
-            <ul>
-                <li><strong>STR:</strong> {monster.strength}</li>
-                <li><strong>DEX:</strong> {monster.dexterity}</li>
-                <li><strong>CON:</strong> {monster.constitution}</li>
-                <li><strong>INT:</strong> {monster.intelligence}</li>
-                <li><strong>WIS:</strong> {monster.wisdom}</li>
-                <li><strong>CHA:</strong> {monster.charisma}</li>
-            </ul>
-        </>
-    )
-}
-
-function SensesInfo({ senses }) {
-    return (
-        <>
-            <h2>Senses</h2>
-            <ul>
-                {Object.entries(senses || {}).map(([key, value]) => (
-                    <li key={key}>
-                        <strong>{key}:</strong> {value}
-                    </li>
-                ))}
-            </ul>
-        </>
-    )
-}
-
-function DamageImmunities({ immunities }) {
-    return (
-        <>
-            <h2>Damage Immunities</h2>
-            {immunities?.length > 0 ? (
-                <ul>
-                    {immunities.map((item) => (
-                        <li key={item}>{item}</li>
-                    ))}
-                </ul>
-            ) : (
-                <p>None</p>
-            )}
-        </>
-    )
-}
-
-function ProficienciesInfo({ proficiencies }) {
-    return (
-        <>
-            <h2>Proficiencies</h2>
-            <ul>
-                {proficiencies?.map((prof) => (
-                    <li key={prof.proficiency.index}>
-                        {prof.proficiency.name}: +{prof.value}
-                    </li>
-                ))}
-            </ul>
-        </>
-    )
-}
-
-function NamedDescriptionList({ title, items }) {
-    return (
-        <>
-            <h2>{title}</h2>
-            {items?.length > 0 ? (
-                <ul>
-                    {items.map((item) => (
-                        <li key={item.name}>
-                            <strong>{item.name}:</strong> {item.desc}
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>None</p>
-            )}
-        </>
-    )
-}
-
-function MonsterDetails({ monster }) {
-    return (
-        <div>
-            <h1>{monster.name}</h1>
-
-            <img
-                src={monster.image}
-                alt={monster.name}
-                style={{ width: "400px", maxWidth: "100%", borderRadius: "12px" }}
-            />
-
-            <BasicInfo monster={monster} />
-            <SpeedInfo speed={monster.speed} />
-            <StatsInfo monster={monster} />
-            <SensesInfo senses={monster.senses} />
-            <DamageImmunities immunities={monster.damage_immunities} />
-            <ProficienciesInfo proficiencies={monster.proficiencies} />
-            <NamedDescriptionList title="Special Abilities" items={monster.special_abilities} />
-            <NamedDescriptionList title="Actions" items={monster.actions} />
-            <NamedDescriptionList title="Legendary Actions" items={monster.legendary_actions} />
-        </div>
-    )
-}
-
-function fetchMonster(monsterName) {
-    return fetch(`/api/monsters/${monsterName}`).then((response) => {
-        if (!response.ok) {
-            throw new Error("Failed to fetch monster")
-        }
-        return response.json()
-    })
-}
+const BASE_URL = "https://www.dnd5eapi.co";
 
 export default function AboutMonsters() {
-    const [searchName, setSearchName] = useState("adult-red-dragon")
-    const [monsterName, setMonsterName] = useState("adult-red-dragon")
-    const [monster, setMonster] = useState(null)
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState("")
+    const { index } = useParams();
+    const [monster, setMonster] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
-        setLoading(true)
-        setError("")
-        setMonster(null)
+        async function fetchMonster() {
+            try {
+                setLoading(true);
+                setError("");
 
-        fetchMonster(monsterName)
-            .then((data) => {
-                setMonster(data)
-                setLoading(false)
-            })
-            .catch((err) => {
-                setError(err.message)
-                setLoading(false)
-            })
-    }, [monsterName])
+                const response = await fetch(`${BASE_URL}/api/2014/monsters/${index}`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch monster details");
+                }
 
-    function handleSearch(e) {
-        e.preventDefault()
-        setMonsterName(searchName.trim().toLowerCase())
-    }
+                const data = await response.json();
+                setMonster(data);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchMonster();
+    }, [index]);
+
+    if (loading) return <p>Loading monster details...</p>;
+    if (error) return <p>Error: {error}</p>;
+    if (!monster) return <p>No monster found.</p>;
 
     return (
-        <div style={{ padding: "20px" }}>
-            <SearchForm
-                searchName={searchName}
-                setSearchName={setSearchName}
-                onSearch={handleSearch}
-            />
+        <section className="detail-card">
+            <Link to="/" className="back-link">
+                ← Back to monsters
+            </Link>
 
-            {loading && <p>Loading...</p>}
-            {error && <p>{error}</p>}
-            {!loading && !error && monster && <MonsterDetails monster={monster} />}
-        </div>
-    )
+            <h2>{monster.name}</h2>
+
+            <div className="detail-grid">
+                <p><strong>Size:</strong> {monster.size}</p>
+                <p><strong>Type:</strong> {monster.type}</p>
+                <p><strong>Alignment:</strong> {monster.alignment}</p>
+                <p><strong>Armor Class:</strong> {monster.armor_class?.[0]?.value ?? "N/A"}</p>
+                <p><strong>Hit Points:</strong> {monster.hit_points}</p>
+                <p><strong>Challenge Rating:</strong> {monster.challenge_rating}</p>
+                <p><strong>Strength:</strong> {monster.strength}</p>
+                <p><strong>Dexterity:</strong> {monster.dexterity}</p>
+                <p><strong>Constitution:</strong> {monster.constitution}</p>
+                <p><strong>Intelligence:</strong> {monster.intelligence}</p>
+                <p><strong>Wisdom:</strong> {monster.wisdom}</p>
+                <p><strong>Charisma:</strong> {monster.charisma}</p>
+            </div>
+
+            {monster.special_abilities && monster.special_abilities.length > 0 && (
+                <div className="section-box">
+                    <h3>Special Abilities</h3>
+                    {monster.special_abilities.map((ability) => (
+                        <div key={ability.name}>
+                            <p>
+                                <strong>{ability.name}:</strong> {ability.desc}
+                            </p>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {monster.actions && monster.actions.length > 0 && (
+                <div className="section-box">
+                    <h3>Actions</h3>
+                    {monster.actions.map((action) => (
+                        <div key={action.name}>
+                            <p>
+                                <strong>{action.name}:</strong> {action.desc}
+                            </p>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </section>
+    );
 }

@@ -1,20 +1,19 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Monsters from "./Pages/Monsters.jsx";
-import AboutMonsters from './Pages/AboutMonsters.jsx';
-import './App.css'
+import { Link, Outlet } from "react-router-dom";
 
-function App() {
+export default function App() {
+    return (
+        <div className="app">
+            <header className="header">
+                <h1>Monster Manual</h1>
+                <nav className="nav">
+                    <Link to="/">Monsters</Link>
+                    <Link to="/about">About</Link>
+                </nav>
+            </header>
 
-
-  return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Monsters />} />
-          <Route path="/AboutMonsters" element={<AboutMonsters />}/>
-        </Routes>
-      </BrowserRouter>
-
-  )
+            <main className="main">
+                <Outlet />
+            </main>
+        </div>
+    );
 }
-
-export default App

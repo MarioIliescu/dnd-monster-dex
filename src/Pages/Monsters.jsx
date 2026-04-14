@@ -1,36 +1,32 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
-const BASE_URL = "https://www.dnd5eapi.co";
-const PAGE_SIZE = 20;
+import "./Stylesheets/Monsters.css";
+const PAGE_SIZE = 9;
 
 export default function MonstersPage() {
-    const [monsters, setMonsters] = useState([]);
+    const [monsters, setMonsters] = useState([]);//Initial empty list of monsters
     const [page, setPage] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
     useEffect(() => {
         async function fetchMonsters() {
-            try {
+
                 setLoading(true);
                 setError("");
 
-                const response = await fetch(`${BASE_URL}/api/2014/monsters`);
+                const response = await fetch(`/api/2014/monsters`);
                 if (!response.ok) {
                     throw new Error("Failed to fetch monsters");
                 }
-
                 const data = await response.json();
-                setMonsters(data.results);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
+                return data.results
         }
 
-        fetchMonsters();
+         fetchMonsters()
+             .then((result) =>
+        {setMonsters(result)
+        }).catch((error) => {setError(error.message)}).finally(() => setLoading(false));
     }, []);
 
     const totalPages = Math.ceil(monsters.length / PAGE_SIZE);
@@ -52,7 +48,41 @@ export default function MonstersPage() {
 
     if (loading) return <p>Loading monsters...</p>;
     if (error) return <p>Error: {error}</p>;
+    function MonsterCard({ monster }) {
+        const [imageUrl, setImageUrl] = useState("");
+        const [loading, setLoading] = useState(true);
 
+        useEffect(() => {
+            async function loadImage() {
+                try {
+                    const response = await fetch(monster.url);
+                    const data = await response.json();
+                    const originalUrl = data.image;
+                    if (originalUrl) {
+                        const optimizedUrl = `https://images.weserv.nl/?url=${encodeURIComponent(originalUrl)}&w=80&h=80&fit=cover&q=30&output=webp`;
+                        setImageUrl(optimizedUrl);
+                    }
+                    setImageUrl(data.image);
+                } catch (err) {
+                    console.error("Failed to load image:", err);
+                } finally {
+                    setLoading(false);
+                }
+            }
+            loadImage();
+        }, [monster.url]);
+
+        return (
+            <Link to={`/monster/${monster.index}`} className="card">
+                <div className="monster-image-container">
+                    {!loading && imageUrl && (
+                        <img className="monsterimage" src={imageUrl} alt={monster.name} />
+                    )}
+                </div>
+                <h3>{monster.name}</h3>
+            </Link>
+        );
+    }
     return (
         <section>
             <h2>All Monsters</h2>
@@ -60,14 +90,7 @@ export default function MonstersPage() {
 
             <div className="card-grid">
                 {visibleMonsters.map((monster) => (
-                    <Link
-                        key={monster.index}
-                        to={`/monster/${monster.index}`}
-                        className="card"
-                    >
-                        <h3>{monster.name}</h3>
-                        <p>View details</p>
-                    </Link>
+                   <MonsterCard key={monster.id} monster={monster} />
                 ))}
             </div>
 

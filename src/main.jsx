@@ -7,6 +7,7 @@ import {
 import App from "./App";
 import MonstersPage from "./pages/Monsters";
 import AboutMonsters from "./pages/AboutMonsters";
+import About from "./pages/About";
 import "./index.css";
 
 const router = createHashRouter([
@@ -16,6 +17,7 @@ const router = createHashRouter([
         children: [
             { index: true, element: <MonstersPage /> },
             { path: "monster/:index", element: <AboutMonsters /> },
+            { path: "about", element: <About /> },
         ],
     },
 ]);

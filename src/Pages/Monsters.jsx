@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import "./Stylesheets/Monsters.css";
 
-const PAGE_SIZE = 9;
+const PAGE_SIZE = 15;
 const API_BASE = "https://www.dnd5eapi.co/api/2014";
 
 export default function MonstersPage() {

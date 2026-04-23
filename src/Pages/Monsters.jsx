@@ -56,7 +56,7 @@ export default function MonstersPage() {
         useEffect(() => {
             async function loadImage() {
                 try {
-                    const response = await fetch(monster.url);
+                    const response = await fetch(`https://www.dnd5eapi.co${monster.url}`);
                     const data = await response.json();
                     setImageUrl(data.image);
                 } catch (err) {

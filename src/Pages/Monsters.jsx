@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Stylesheets/Monsters.css";
 const PAGE_SIZE = 9;
+const API_BASE ="https://www.dnd5eapi.co/api/2014";
 
 export default function MonstersPage() {
     const [monsters, setMonsters] = useState([]);//Initial empty list of monsters
@@ -15,7 +16,7 @@ export default function MonstersPage() {
                 setLoading(true);
                 setError("");
 
-                const response = await fetch(`/api/2014/monsters`);
+                const response = await fetch(`${API_BASE}/2014/monsters`);
                 if (!response.ok) {
                     throw new Error("Failed to fetch monsters");
                 }
@@ -60,7 +61,6 @@ export default function MonstersPage() {
                     const originalUrl = data.image;
                     if (originalUrl) {
                         const optimizedUrl = `https://images.weserv.nl/?url=${encodeURIComponent(originalUrl)}&w=80&h=80&fit=cover&q=30&output=webp`;
-                        setImageUrl(optimizedUrl);
                     }
                     setImageUrl(data.image);
                 } catch (err) {

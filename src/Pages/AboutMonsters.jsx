@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
-export default function AboutMonsters() {
+const API_BASE ="https://www.dnd5eapi.co/api/2014";
+
+export default function AboutMonsters() { 
     const { index } = useParams();
     const [monster, setMonster] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -13,7 +15,7 @@ export default function AboutMonsters() {
                 setLoading(true);
                 setError("");
 
-                const response = await fetch(`/api/2014/monsters/${index}`);
+                const response = await fetch(`${API_BASE}/monsters/${index}`);
                 if (!response.ok) {
                     throw new Error("Failed to fetch monster details");
                 }

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import {useEffect, useState} from "react";
+import {Link} from "react-router-dom";
 import "./Stylesheets/Monsters.css";
+
 const PAGE_SIZE = 9;
-const API_BASE ="https://www.dnd5eapi.co/api/2014";
+const API_BASE = "https://www.dnd5eapi.co/api/2014";
 
 export default function MonstersPage() {
     const [monsters, setMonsters] = useState([]);//Initial empty list of monsters
@@ -13,21 +14,23 @@ export default function MonstersPage() {
     useEffect(() => {
         async function fetchMonsters() {
 
-                setLoading(true);
-                setError("");
+            setLoading(true);
+            setError("");
 
-                const response = await fetch(`${API_BASE}/monsters`);
-                if (!response.ok) {
-                    throw new Error("Failed to fetch monsters");
-                }
-                const data = await response.json();
-                return data.results
+            const response = await fetch(`${API_BASE}/monsters`);
+            if (!response.ok) {
+                throw new Error("Failed to fetch monsters");
+            }
+            const data = await response.json();
+            return data.results
         }
 
-         fetchMonsters()
-             .then((result) =>
-        {setMonsters(result)
-        }).catch((error) => {setError(error.message)}).finally(() => setLoading(false));
+        fetchMonsters()
+            .then((result) => {
+                setMonsters(result)
+            }).catch((error) => {
+            setError(error.message)
+        }).finally(() => setLoading(false));
     }, []);
 
     const totalPages = Math.ceil(monsters.length / PAGE_SIZE);
@@ -49,22 +52,39 @@ export default function MonstersPage() {
 
     if (loading) return <p>Loading monsters...</p>;
     if (error) return <p>Error: {error}</p>;
-    function MonsterCard({ monster }) {
+
+    function MonsterCard({monster}) {
         const [imageUrl, setImageUrl] = useState("");
         const [loading, setLoading] = useState(true);
 
         useEffect(() => {
             async function loadImage() {
                 try {
-                    const response = await fetch(monster.url);
+                    const response = await fetch(`https://www.dnd5eapi.co${monster.url}`);
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch monster details");
+                    }
                     const data = await response.json();
-                    setImageUrl(data.image);
+                    if (data.image) {
+                        let fullImageUrl = "";
+
+                        if (data.image.startsWith("http")) {
+                            fullImageUrl = data.image;
+                        } else if (data.image.startsWith("/")) {
+                            fullImageUrl = `https://www.dnd5eapi.co${data.image}`;
+                        } else {
+                            fullImageUrl = `https://www.dnd5eapi.co/images/monsters/${data.image}`;
+                        }
+
+                        setImageUrl(fullImageUrl);
+                    }
                 } catch (err) {
                     console.error("Failed to load image:", err);
                 } finally {
                     setLoading(false);
                 }
             }
+
             loadImage();
         }, [monster.url]);
 
@@ -72,13 +92,15 @@ export default function MonstersPage() {
             <Link to={`/monster/${monster.index}`} className="card">
                 <div className="monster-image-container">
                     {!loading && imageUrl && (
-                        <img className="monsterimage" src={imageUrl} alt={monster.name} />
+                        <img className="monsterimage" src={imageUrl}
+                             alt={monster.name}/>
                     )}
                 </div>
                 <h3>{monster.name}</h3>
             </Link>
         );
     }
+
     return (
         <section>
             <h2>All Monsters</h2>
@@ -86,7 +108,7 @@ export default function MonstersPage() {
 
             <div className="card-grid">
                 {visibleMonsters.map((monster) => (
-                   <MonsterCard key={monster.id} monster={monster} />
+                    <MonsterCard key={monster.id} monster={monster}/>
                 ))}
             </div>
 

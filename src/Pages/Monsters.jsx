@@ -16,7 +16,7 @@ export default function MonstersPage() {
                 setLoading(true);
                 setError("");
 
-                const response = await fetch(`${API_BASE}/2014/monsters`);
+                const response = await fetch(`${API_BASE}/monsters`);
                 if (!response.ok) {
                     throw new Error("Failed to fetch monsters");
                 }
@@ -58,10 +58,6 @@ export default function MonstersPage() {
                 try {
                     const response = await fetch(monster.url);
                     const data = await response.json();
-                    const originalUrl = data.image;
-                    if (originalUrl) {
-                        const optimizedUrl = `https://images.weserv.nl/?url=${encodeURIComponent(originalUrl)}&w=80&h=80&fit=cover&q=30&output=webp`;
-                    }
                     setImageUrl(data.image);
                 } catch (err) {
                     console.error("Failed to load image:", err);

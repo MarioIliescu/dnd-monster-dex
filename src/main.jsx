@@ -5,9 +5,9 @@ import {
     RouterProvider,
 } from "react-router-dom";
 import App from "./App";
-import MonstersPage from "./pages/Monsters";
-import AboutMonsters from "./pages/AboutMonsters";
-import About from "./pages/About";
+import MonstersPage from "./Pages/Monsters";
+import AboutMonsters from "./Pages/AboutMonsters";
+import About from "./Pages/About";
 import "./index.css";
 
 const router = createHashRouter([
@@ -23,7 +23,5 @@ const router = createHashRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-    <React.StrictMode>
         <RouterProvider router={router} />
-    </React.StrictMode>
 );

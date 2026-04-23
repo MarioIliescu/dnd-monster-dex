@@ -1,28 +1,55 @@
-﻿
-export default function About(){
+﻿export default function About() {
+    return (
+        <section className="about">
+            <h2>What is Dungeons & Dragons?</h2>
 
-    return(
+            <p>
+                Dungeons & Dragons (D&D) is a tabletop role-playing game where players
+                tell a story together. There are two main roles: the Dungeon Master (DM)
+                and the players.
+            </p>
 
-    <p>A table top board game where two types of people play. The dungeon master and the players.
+            <h3>The Dungeon Master</h3>
+            <p>
+                The Dungeon Master controls the world. They describe locations,
+                play as characters in the world, and react to what the players do.
+                Think of the DM like the “game engine” of a video game.
+            </p>
 
-        The dungeon master acts as the world, giving players descriptions and info about areas, roleplaying as the worlds inhabitants and reacting to what the players do. Sort of like the computer for a video game. The dungeon master weaves the story for the players to play in.
+            <h3>The Players</h3>
+            <p>
+                The players are the main characters in the story. They explore,
+                talk to characters, solve problems, and fight enemies. They can
+                approach situations however they want, and the DM responds to it.
+            </p>
 
-        The players are the protagonist of the game, they go around interacting with everything through dialogue, puzzle solving, exploration, combat, etc. They can do as they like in the world and its the DMs job to react to what they do.
+            <p>
+                The game is a back-and-forth: the DM describes what’s happening,
+                and the players decide what to do next.
+            </p>
 
-        Its a back and forth game. The dungeon master says whats going on in the world, like in this town there's a murderer on the loose. And the players head out to deal with whatever's going on, like maybe apprehending the murderer or conspiring with them to murder even more people.
-        <br>
-        </br>
-        Monsters in D&D are any creature—ranging from animals to supernatural horrors—that serve as obstacles, antagonists, or threats for player characters. They possess stat blocks, are classified by type (e.g., Fiend, Undead) and size, and often feature in the Monster Manual. Common synonyms include creatures, adversaries, beasts, and NPCs (non-player characters).
-        Usage Examples and Categories
-        <ul>
-        Monsters are used by Dungeon Masters to create challenges, battles, and narrative encounters. They are generally categorized into 14 types:
-            <li>Aberrations: Alien beings like Beholders or Mind Flayers.</li>
-            <li>Beasts: Natural creatures, such as wolves or giant animals.</li>
-            <li>Fiends: Creatures from Lower Planes like Demons and Devils.</li>
-            <li>Monstrosities: Unnatural creatures like Mimics or Owlbears.</li>
-            <li>Undead: Reanimated corpses or spirits, such as Vampires or Zombies.</li>
-            <li>Others: Celestials, Constructs, Dragons, Elementals, Fey, Giants, Humanoids, Oozes, and Plants.</li>
-        </ul>
-    </p>
- )
+            <h2>Monsters in D&D</h2>
+
+            <p>
+                Monsters are creatures in the game that act as enemies, obstacles,
+                or challenges. They can be anything from normal animals to powerful
+                supernatural beings.
+            </p>
+
+            <p>
+                Each monster has stats and belongs to a type, such as Undead,
+                Fiend, or Beast.
+            </p>
+
+            <h3>Common Monster Types</h3>
+            <ul>
+                <li><strong>Aberrations:</strong> Strange alien creatures (e.g. Mind Flayers)</li>
+                <li><strong>Beasts:</strong> Natural animals (e.g. wolves)</li>
+                <li><strong>Fiends:</strong> Demons and devils</li>
+                <li><strong>Monstrosities:</strong> Unnatural creatures (e.g. Owlbears)</li>
+                <li><strong>Undead:</strong> Zombies, vampires, and spirits</li>
+                <li><strong>Others:</strong> Dragons, Elementals, Fey, Giants, and more</li>
+            </ul>
+        </section>
+    );
 }
